@@ -1,6 +1,6 @@
 FROM python:3.5.1-slim
 
-MAINTAINER YUX <yu.xiao.fr@gmail.com>
+MAINTAINER xuming <me@xuming.net>
 
 RUN apt-get update
 RUN apt-get -y upgrade
@@ -10,6 +10,10 @@ RUN pip install --upgrade wheel
 RUN apt-get -y install nginx supervisor
 RUN pip install --no-cache-dir gunicorn Flask
 
+RUN apt-get install -y libpq-dev
+RUN pip install psycopg2
+RUN pip install redis
+
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/static
 WORKDIR /usr/src/app
@@ -17,7 +21,7 @@ WORKDIR /usr/src/app
 ONBUILD COPY requirements.txt /usr/src/app/
 ONBUILD RUN pip install --no-cache-dir -r requirements.txt
 
-ONBUILD COPY . /usr/src/app
+ONBUILD COPY ../dist/ /usr/src/app
 
 # nginx setup
 RUN rm /etc/nginx/sites-enabled/default
