@@ -34,5 +34,5 @@ RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/
 COPY gunicorn.conf /etc/supervisor/conf.d/
 
-EXPOSE 80
+EXPOSE 7002
 CMD ["/usr/bin/supervisord"]
