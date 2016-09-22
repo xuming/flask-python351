@@ -12,8 +12,8 @@ RUN apt-get update && \
     apt-get install -y libpq-dev && \
     pip install psycopg2 && \
     pip install redis && \
-    mkdir -p /usr/src/app && \
-    mkdir -p /usr/src/app/static 
+    pip install pandas && \
+    mkdir -p /usr/src/app 
 
 WORKDIR /usr/src/app
 
@@ -31,8 +31,8 @@ RUN rm /etc/nginx/sites-enabled/default && \
 
 # supervisor setup
 RUN mkdir -p /var/log/supervisor
-COPY supervisord.conf /etc/supervisor/conf.d/
-COPY gunicorn.conf /etc/supervisor/conf.d/
+COPY supervisord/ /etc/supervisor/conf.d/
+COPY crontab /etc
 
 EXPOSE 80
 CMD ["/usr/bin/supervisord"]
