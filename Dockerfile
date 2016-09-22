@@ -31,7 +31,7 @@ RUN rm /etc/nginx/sites-enabled/default && \
 
 # supervisor setup
 RUN mkdir -p /var/log/supervisor
-COPY supervisord/ /etc/supervisor/conf.d/
+COPY supervisor/ /etc/supervisor/conf.d/
 COPY crontab /etc
 
 EXPOSE 80
