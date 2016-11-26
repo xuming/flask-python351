@@ -4,6 +4,7 @@ MAINTAINER xuming <me@xuming.net>
 
 RUN apt-get update && \
     apt-get -y upgrade && \
+    apt-get install -y cron && \
     apt-get install -y build-essential && \
     pip install --upgrade pip && \
     pip install --upgrade wheel && \
@@ -13,14 +14,20 @@ RUN apt-get update && \
     pip install psycopg2 && \
     pip install redis && \
     pip install pandas && \
-    mkdir -p /usr/src/app 
+    mkdir -p /usr/src/app && \
+    mkdir -p /usr/src/jobs && \
+    apt-get -y clean && \
+    apt-get remove -y build-essential && \
+    apt-get -y autoremove && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
+
 
 WORKDIR /usr/src/app
 
 ONBUILD COPY requirements.txt /usr/src/app/
 ONBUILD RUN pip install --no-cache-dir -r requirements.txt
 
-ONBUILD COPY app/ /usr/src/app
+COPY app/ /usr/src/app/
 
 # nginx setup
 COPY flask.conf /etc/nginx/sites-available/
@@ -30,9 +37,11 @@ RUN rm /etc/nginx/sites-enabled/default && \
     echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # supervisor setup
-RUN mkdir -p /var/log/supervisor
-COPY supervisor/ /etc/supervisor/conf.d/
-COPY crontab /etc
+RUN mkdir -p /var/log/supervisor && \
+    mkdir -p /docker-entrypoint-init.d
+COPY supervisor/ /etc/supervisor/
+COPY docker-entrypoint.sh /
+# COPY crontab /etc
 
 EXPOSE 80
-CMD ["/usr/bin/supervisord"]
+CMD ["/docker-entrypoint.sh"]
