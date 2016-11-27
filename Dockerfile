@@ -21,6 +21,8 @@ RUN apt-get update && \
     apt-get -y autoremove && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
 
+#设置cron脚本
+RUN crontab /etc/crontab
 
 WORKDIR /usr/src/app
 
